@@ -28,17 +28,22 @@ public class UsuarioService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public Usuario registrarUsuario(UsuarioRegistroDTO dto) {
-        Usuario usuario = new Usuario();
-        usuario.setNombre(dto.getNombre());
-        usuario.setEmail(dto.getEmail());
-        usuario.setTelefono(dto.getTelefono());
+    public Usuario registrar(UsuarioRegistroDTO dto) {
+        // 1. Verificar si el email ya existe para evitar duplicados
+        if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new RuntimeException("El email ya está registrado");
+        }
 
-        // Aplicamos hashing con salting automático mediante BCrypt
-        String encodedPassword = passwordEncoder.encode(dto.getPassword());
-        usuario.setPassword(encodedPassword);
+        Usuario nuevoUsuario = new Usuario();
+        nuevoUsuario.setNombre(dto.getNombre());
+        nuevoUsuario.setEmail(dto.getEmail());
+        nuevoUsuario.setTelefono(dto.getTelefono());
 
-        return usuarioRepository.save(usuario);
+        // 2. CIFRADO CRÍTICO
+        String hash = passwordEncoder.encode(dto.getPassword());
+        nuevoUsuario.setContrasena(hash);
+
+        return usuarioRepository.save(nuevoUsuario);
     }
 
     public AuthResponseDTO autenticar(LoginDTO loginDto) {
@@ -47,7 +52,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // 2. Verificamos si la contraseña coincide con el hash almacenado
-        boolean coincide = passwordEncoder.matches(loginDto.getPassword(), usuario.getPassword());
+        boolean coincide = passwordEncoder.matches(loginDto.getContrasena(), usuario.getContrasena());
 
         if (coincide) {
             return new AuthResponseDTO(true, "Login exitoso", usuario.getIdUsuario(), usuario.getNombre());

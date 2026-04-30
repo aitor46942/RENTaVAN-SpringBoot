@@ -1,7 +1,9 @@
 package com.RENTaVAN.app.controllers;
 
+import com.RENTaVAN.app.dto.AuthResponse;
 import com.RENTaVAN.app.dto.AuthResponseDTO;
 import com.RENTaVAN.app.dto.LoginDTO;
+import com.RENTaVAN.app.dto.UsuarioRegistroDTO;
 import com.RENTaVAN.app.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,5 +27,11 @@ public class AuthController {
             return ResponseEntity.ok(respuesta);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(respuesta);
+    }
+
+    @PostMapping("/register") // Combinado con lo anterior forma /api/auth/register
+    public ResponseEntity<?> registrarUsuario(@RequestBody UsuarioRegistroDTO registroDTO) {
+        // Tu lógica de registro y BCrypt aquí
+        return ResponseEntity.ok(new AuthResponse(true, "Registro exitoso"));
     }
 }
