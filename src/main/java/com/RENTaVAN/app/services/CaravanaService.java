@@ -58,18 +58,18 @@ public class CaravanaService {
         return caravanaRepository.save(c);
     }
 
-    public CaravanaResponseDTO entidadADto(Caravana caravana) {
+    public CaravanaResponseDTO aResponseDTO(Caravana entidad) {
         CaravanaResponseDTO dto = new CaravanaResponseDTO();
-        dto.setIdCaravana(caravana.getIdCaravana());
-        dto.setModelo(caravana.getModelo());
-        dto.setDescripcion(caravana.getDescripcion());
-        dto.setLocation(caravana.getLocation());
+        dto.setIdCaravana(entidad.getIdCaravana());
+        dto.setModelo(entidad.getModelo());
+        dto.setDescripcion(entidad.getDescripcion());
+        dto.setLocation(entidad.getLocation());
 
+        // Creamos el resumen del propietario sin datos sensibles
         CaravanaResponseDTO.PropietarioResumenDTO propDto = new CaravanaResponseDTO.PropietarioResumenDTO();
-        propDto.setIdUsuario(caravana.getPropietario().getIdUsuario());
-        propDto.setNombre(caravana.getPropietario().getNombre());
-        propDto.setTelefono(caravana.getPropietario().getTelefono());
-
+        propDto.setIdUsuario(entidad.getPropietario().getIdUsuario());
+        propDto.setNombre(entidad.getPropietario().getNombre());
+        propDto.setTelefono(entidad.getPropietario().getTelefono());
         dto.setPropietario(propDto);
         return dto;
     }
