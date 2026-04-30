@@ -1,7 +1,10 @@
 package com.RENTaVAN.app.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.locationtech.jts.geom.Point;
 
 @Entity
@@ -20,11 +23,11 @@ public class Caravana {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    // Este campo se conecta con el 'location GEOMETRY'
     @Column(columnDefinition = "geometry(Point, 4326)")
     private Point location;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_propietario", nullable = false)
+    @JsonBackReference // Evita que la caravana vuelva a serializar al propietario
     private Usuario propietario;
 }
