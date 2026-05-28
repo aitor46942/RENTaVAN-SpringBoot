@@ -20,9 +20,6 @@ public class UsuarioController {
         return usuarioService.obtenerTodos();
     }
 
-    //CORRECCIÓN: antes llamaba a registrarUsuario(Usuario)
-    // que guardaba sin BCrypt y que ya no existe en el servicio.
-    // Ahora recibe un UsuarioRegistroDTO y llama a registrar() que sí usa BCrypt
     @PostMapping
     public AuthResponseDTO crear(@RequestBody UsuarioRegistroDTO dto) {
         return usuarioService.registrar(dto);

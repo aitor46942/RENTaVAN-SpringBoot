@@ -30,9 +30,8 @@ public class Alquiler {
     private LocalDate fechaFin;
 
     @Column(length = 50)
-    private String estado; // Ej: 'Pendiente', 'Confirmado'
+    private String estado;
 
-    // Relación con los viajeros que participan en este alquiler
     @OneToMany(mappedBy = "alquiler", cascade = CascadeType.ALL)
     private List<Viajero> viajeros;
 }

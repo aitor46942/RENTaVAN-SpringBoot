@@ -7,6 +7,5 @@ import java.util.List;
 
 @Repository
 public interface PeriodoDisponibilidadRepository extends JpaRepository<PeriodoDisponibilidad, Long> {
-    // Muestra los periodos libres de una caravana concreta
     List<PeriodoDisponibilidad> findByCaravanaIdCaravana(Long idCaravana);
 }

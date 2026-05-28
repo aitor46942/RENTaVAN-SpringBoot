@@ -7,6 +7,5 @@ import java.util.List;
 
 @Repository
 public interface ViajeroRepository extends JpaRepository<Viajero, Long> {
-    // Lista los viajeros asociados a un contrato de alquiler
     List<Viajero> findByAlquilerIdAlquiler(Long idAlquiler);
 }

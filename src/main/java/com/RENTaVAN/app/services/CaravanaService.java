@@ -7,10 +7,6 @@ import com.RENTaVAN.app.entities.Usuario;
 import com.RENTaVAN.app.repositories.CaravanaRepository;
 import com.RENTaVAN.app.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -19,43 +15,30 @@ import java.util.List;
 public class CaravanaService {
 
     private final CaravanaRepository caravanaRepository;
+    private final UsuarioRepository  usuarioRepository;
 
-    public Caravana guardarCaravana(Caravana caravana) {
-        return caravanaRepository.save(caravana);
+    public List<Caravana> obtenerTodas() {
+        return caravanaRepository.findAll();
     }
 
     public List<Caravana> listarPorPropietario(Long idPropietario) {
         return caravanaRepository.findByPropietarioIdUsuario(idPropietario);
     }
 
-    public List<Caravana> obtenerTodas() {
-        return caravanaRepository.findAll();
-    }
-
-    public List<Caravana> buscarCaravanasCercanas(double lat, double lng, double radioKm) {
-        double distanciaMetros = radioKm * 1000; // Convertimos Km a metros
-        return caravanaRepository.buscarCercanas(lat, lng, distanciaMetros);
-    }
-
-    private final UsuarioRepository usuarioRepository;
-    // El 4326 es el estándar de GPS (WGS84)
-    private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
-
     public Caravana guardarDesdeDTO(CaravanaDTO dto) {
         Caravana c = new Caravana();
         c.setModelo(dto.getModelo());
         c.setDescripcion(dto.getDescripcion());
-
-        // Buscamos al dueño en la DB de Docker
         Usuario dueño = usuarioRepository.findById(dto.getIdPropietario())
                 .orElseThrow(() -> new RuntimeException("Propietario no encontrado"));
         c.setPropietario(dueño);
-
-        // Creamos el punto GPS real para PostGIS
-        Point punto = geometryFactory.createPoint(new Coordinate(dto.getLongitud(), dto.getLatitud()));
-        c.setLocation(punto);
-
         return caravanaRepository.save(c);
+    }
+
+    public void eliminarCaravana(Long idCaravana) {
+        if (!caravanaRepository.existsById(idCaravana))
+            throw new RuntimeException("Caravana no encontrada");
+        caravanaRepository.deleteById(idCaravana);
     }
 
     public CaravanaResponseDTO aResponseDTO(Caravana entidad) {
@@ -63,9 +46,6 @@ public class CaravanaService {
         dto.setIdCaravana(entidad.getIdCaravana());
         dto.setModelo(entidad.getModelo());
         dto.setDescripcion(entidad.getDescripcion());
-        dto.setLocation(entidad.getLocation());
-
-        // Creamos el resumen del propietario sin datos sensibles
         CaravanaResponseDTO.PropietarioResumenDTO propDto = new CaravanaResponseDTO.PropietarioResumenDTO();
         propDto.setIdUsuario(entidad.getPropietario().getIdUsuario());
         propDto.setNombre(entidad.getPropietario().getNombre());

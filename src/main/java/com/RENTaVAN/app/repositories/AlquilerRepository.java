@@ -7,6 +7,5 @@ import java.util.List;
 
 @Repository
 public interface AlquilerRepository extends JpaRepository<Alquiler, Long> {
-    // Encuentra alquileres por el ID del cliente
     List<Alquiler> findByClienteIdUsuario(Long idUsuario);
 }

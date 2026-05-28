@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
-import org.locationtech.jts.geom.Point;
-
 @Entity
 @Table(name = "caravanas")
 @Data
@@ -23,11 +21,8 @@ public class Caravana {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @Column(columnDefinition = "geometry(Point, 4326)")
-    private Point location;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_propietario", nullable = false)
-    @JsonBackReference // Evita que la caravana vuelva a serializar al propietario
+    @JsonBackReference
     private Usuario propietario;
 }
