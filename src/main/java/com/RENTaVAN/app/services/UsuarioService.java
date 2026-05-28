@@ -1,6 +1,5 @@
 package com.RENTaVAN.app.services;
 
-
 import com.RENTaVAN.app.dto.AuthResponseDTO;
 import com.RENTaVAN.app.dto.LoginDTO;
 import com.RENTaVAN.app.dto.UsuarioRegistroDTO;
@@ -12,52 +11,44 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor // Crea el constructor para la inyección automática
+@RequiredArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-
-    public Usuario registrarUsuario(Usuario usuario) {
-        // Aquí podrías añadir lógica para encriptar la contraseña
-        return usuarioRepository.save(usuario);
-    }
-
-    public List<Usuario> obtenerTodos() {
-        return usuarioRepository.findAll();
-    }
-
     private final BCryptPasswordEncoder passwordEncoder;
 
-    public Usuario registrar(UsuarioRegistroDTO dto) {
-        // 1. Verificar si el email ya existe para evitar duplicados
+    public AuthResponseDTO registrar(UsuarioRegistroDTO dto) {
         if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new RuntimeException("El email ya está registrado");
+            return new AuthResponseDTO(false, "El email ya está registrado", null, null);
         }
 
-        Usuario nuevoUsuario = new Usuario();
-        nuevoUsuario.setNombre(dto.getNombre());
-        nuevoUsuario.setEmail(dto.getEmail());
-        nuevoUsuario.setTelefono(dto.getTelefono());
+        Usuario nuevo = new Usuario();
+        nuevo.setNombre(dto.getNombre());
+        nuevo.setEmail(dto.getEmail());
+        nuevo.setTelefono(dto.getTelefono());
+        nuevo.setContrasena(passwordEncoder.encode(dto.getPassword()));
 
-        // 2. CIFRADO CRÍTICO
-        String hash = passwordEncoder.encode(dto.getPassword());
-        nuevoUsuario.setContrasena(hash);
-
-        return usuarioRepository.save(nuevoUsuario);
+        Usuario guardado = usuarioRepository.save(nuevo);
+        return new AuthResponseDTO(true, "Registro exitoso", guardado.getIdUsuario(), guardado.getNombre());
     }
 
     public AuthResponseDTO autenticar(LoginDTO loginDto) {
-        // 1. Buscamos al usuario por su email único
-        Usuario usuario = usuarioRepository.findByEmail(loginDto.getEmail())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        Usuario usuario = usuarioRepository.findByEmail(loginDto.getEmail()).orElse(null);
 
-        // 2. Verificamos si la contraseña coincide con el hash almacenado
-        boolean coincide = passwordEncoder.matches(loginDto.getContrasena(), usuario.getContrasena());
+        if (usuario == null) {
+            return new AuthResponseDTO(false, "Usuario no encontrado", null, null);
+        }
+
+        boolean coincide = passwordEncoder.matches(loginDto.getPassword(), usuario.getContrasena());
 
         if (coincide) {
             return new AuthResponseDTO(true, "Login exitoso", usuario.getIdUsuario(), usuario.getNombre());
         } else {
-            return new AuthResponseDTO(false, "Credenciales incorrectas", null, null);
+            return new AuthResponseDTO(false, "Contraseña incorrecta", null, null);
         }
+    }
+
+    public List<Usuario> obtenerTodos() {
+        return usuarioRepository.findAll();
     }
 }

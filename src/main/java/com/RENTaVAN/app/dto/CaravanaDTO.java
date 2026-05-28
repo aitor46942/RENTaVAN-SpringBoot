@@ -7,6 +7,4 @@ public class CaravanaDTO {
     private String modelo;
     private String descripcion;
     private Long idPropietario;
-    private Double latitud;
-    private Double longitud;
 }

@@ -1,5 +1,7 @@
 package com.RENTaVAN.app.controllers;
 
+import com.RENTaVAN.app.dto.AuthResponseDTO;
+import com.RENTaVAN.app.dto.UsuarioRegistroDTO;
 import com.RENTaVAN.app.entities.Usuario;
 import com.RENTaVAN.app.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,7 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public Usuario crear(@RequestBody Usuario usuario) {
-        return usuarioService.registrarUsuario(usuario);
+    public AuthResponseDTO crear(@RequestBody UsuarioRegistroDTO dto) {
+        return usuarioService.registrar(dto);
     }
 }

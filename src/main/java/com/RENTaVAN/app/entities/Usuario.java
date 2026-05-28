@@ -27,7 +27,6 @@ public class Usuario {
 
     private String telefono;
 
-    // Relación: Un usuario puede tener muchas caravanas
     @OneToMany(mappedBy = "propietario", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Caravana> caravanas;
