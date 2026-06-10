@@ -47,8 +47,6 @@ public class AlquilerService {
     public Alquiler cancelarAlquiler(Long idAlquiler) {
         Alquiler alquiler = alquilerRepository.findById(idAlquiler)
                 .orElseThrow(() -> new RuntimeException("Alquiler no encontrado"));
-        if (LocalDate.now().isAfter(alquiler.getFechaInicio()))
-            throw new RuntimeException("No se puede cancelar un alquiler ya iniciado");
         alquiler.setEstado("CANCELADO");
         return alquilerRepository.save(alquiler);
     }
