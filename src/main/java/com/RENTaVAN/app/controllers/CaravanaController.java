@@ -2,6 +2,7 @@ package com.RENTaVAN.app.controllers;
 
 import com.RENTaVAN.app.dto.CaravanaDTO;
 import com.RENTaVAN.app.dto.CaravanaResponseDTO;
+import com.RENTaVAN.app.dto.UbicacionDTO;
 import com.RENTaVAN.app.services.CaravanaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,18 @@ public class CaravanaController {
     public List<CaravanaResponseDTO> listarPorPropietario(@PathVariable Long idPropietario) {
         return caravanaService.listarPorPropietario(idPropietario).stream()
                 .map(caravanaService::aResponseDTO).collect(Collectors.toList());
+    }
+
+    @PutMapping("/{idCaravana}/ubicacion")
+    public ResponseEntity<CaravanaResponseDTO> actualizarUbicacion(
+            @PathVariable Long idCaravana,
+            @RequestBody UbicacionDTO dto) {
+        try {
+            return ResponseEntity.ok(
+                    caravanaService.aResponseDTO(caravanaService.actualizarUbicacion(idCaravana, dto)));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{idCaravana}")

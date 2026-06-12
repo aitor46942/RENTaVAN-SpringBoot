@@ -21,6 +21,10 @@ public class Caravana {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
+    private Double latitud;
+
+    private Double longitud;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_propietario", nullable = false)
     @JsonBackReference
