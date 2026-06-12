@@ -2,6 +2,7 @@ package com.RENTaVAN.app.services;
 
 import com.RENTaVAN.app.dto.CaravanaDTO;
 import com.RENTaVAN.app.dto.CaravanaResponseDTO;
+import com.RENTaVAN.app.dto.UbicacionDTO;
 import com.RENTaVAN.app.entities.Caravana;
 import com.RENTaVAN.app.entities.Usuario;
 import com.RENTaVAN.app.repositories.CaravanaRepository;
@@ -29,9 +30,19 @@ public class CaravanaService {
         Caravana c = new Caravana();
         c.setModelo(dto.getModelo());
         c.setDescripcion(dto.getDescripcion());
+        c.setLatitud(dto.getLatitud());
+        c.setLongitud(dto.getLongitud());
         Usuario dueño = usuarioRepository.findById(dto.getIdPropietario())
                 .orElseThrow(() -> new RuntimeException("Propietario no encontrado"));
         c.setPropietario(dueño);
+        return caravanaRepository.save(c);
+    }
+
+    public Caravana actualizarUbicacion(Long idCaravana, UbicacionDTO dto) {
+        Caravana c = caravanaRepository.findById(idCaravana)
+                .orElseThrow(() -> new RuntimeException("Caravana no encontrada"));
+        c.setLatitud(dto.getLatitud());
+        c.setLongitud(dto.getLongitud());
         return caravanaRepository.save(c);
     }
 
@@ -46,6 +57,8 @@ public class CaravanaService {
         dto.setIdCaravana(entidad.getIdCaravana());
         dto.setModelo(entidad.getModelo());
         dto.setDescripcion(entidad.getDescripcion());
+        dto.setLatitud(entidad.getLatitud());
+        dto.setLongitud(entidad.getLongitud());
         CaravanaResponseDTO.PropietarioResumenDTO propDto = new CaravanaResponseDTO.PropietarioResumenDTO();
         propDto.setIdUsuario(entidad.getPropietario().getIdUsuario());
         propDto.setNombre(entidad.getPropietario().getNombre());

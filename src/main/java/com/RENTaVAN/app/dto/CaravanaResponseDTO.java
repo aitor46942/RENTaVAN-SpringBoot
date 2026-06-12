@@ -6,6 +6,8 @@ public class CaravanaResponseDTO {
     private Long idCaravana;
     private String modelo;
     private String descripcion;
+    private Double latitud;
+    private Double longitud;
     private PropietarioResumenDTO propietario;
 
     @Data
