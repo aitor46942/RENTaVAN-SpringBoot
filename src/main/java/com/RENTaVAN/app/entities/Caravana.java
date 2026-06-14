@@ -33,6 +33,10 @@ public class Caravana {
 
     private Integer plazas;
 
+    private Integer anio;
+
+    private String peso;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_propietario", nullable = false)
     @JsonBackReference

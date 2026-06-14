@@ -12,4 +12,6 @@ public class CaravanaDTO {
     private String matricula;
     private Double precioPorDia;
     private Integer plazas;
+    private Integer anio;
+    private String peso;
 }
