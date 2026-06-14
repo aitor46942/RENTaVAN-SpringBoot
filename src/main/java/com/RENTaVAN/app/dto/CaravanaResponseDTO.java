@@ -11,6 +11,8 @@ public class CaravanaResponseDTO {
     private String matricula;
     private Double precioPorDia;
     private Integer plazas;
+    private Integer anio;
+    private String peso;
     private PropietarioResumenDTO propietario;
 
     @Data
