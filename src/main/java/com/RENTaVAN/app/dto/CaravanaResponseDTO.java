@@ -8,6 +8,9 @@ public class CaravanaResponseDTO {
     private String descripcion;
     private Double latitud;
     private Double longitud;
+    private String matricula;
+    private Double precioPorDia;
+    private Integer plazas;
     private PropietarioResumenDTO propietario;
 
     @Data

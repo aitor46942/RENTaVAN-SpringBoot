@@ -3,11 +3,15 @@ package com.RENTaVAN.app.services;
 import com.RENTaVAN.app.dto.AuthResponseDTO;
 import com.RENTaVAN.app.dto.LoginDTO;
 import com.RENTaVAN.app.dto.UsuarioRegistroDTO;
+import com.RENTaVAN.app.dto.UsuarioResponseDTO;
+import com.RENTaVAN.app.dto.UsuarioUpdateDTO;
 import com.RENTaVAN.app.entities.Usuario;
 import com.RENTaVAN.app.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
@@ -50,5 +54,23 @@ public class UsuarioService {
 
     public List<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
+    }
+
+    public UsuarioResponseDTO obtenerPorId(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        return toDTO(usuario);
+    }
+
+    public UsuarioResponseDTO actualizarUsuario(Long id, UsuarioUpdateDTO dto) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado"));
+        usuario.setNombre(dto.getNombre());
+        usuario.setTelefono(dto.getTelefono());
+        return toDTO(usuarioRepository.save(usuario));
+    }
+
+    private UsuarioResponseDTO toDTO(Usuario u) {
+        return new UsuarioResponseDTO(u.getIdUsuario(), u.getNombre(), u.getEmail(), u.getTelefono());
     }
 }

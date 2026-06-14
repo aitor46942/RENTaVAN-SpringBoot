@@ -25,6 +25,14 @@ public class Caravana {
 
     private Double longitud;
 
+    @Column(unique = true)
+    private String matricula;
+
+    @Column(name = "precio_por_dia")
+    private Double precioPorDia;
+
+    private Integer plazas;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_propietario", nullable = false)
     @JsonBackReference
