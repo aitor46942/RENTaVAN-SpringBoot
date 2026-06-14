@@ -32,6 +32,9 @@ public class CaravanaService {
         c.setDescripcion(dto.getDescripcion());
         c.setLatitud(dto.getLatitud());
         c.setLongitud(dto.getLongitud());
+        c.setMatricula(dto.getMatricula());
+        c.setPrecioPorDia(dto.getPrecioPorDia());
+        c.setPlazas(dto.getPlazas());
         Usuario dueño = usuarioRepository.findById(dto.getIdPropietario())
                 .orElseThrow(() -> new RuntimeException("Propietario no encontrado"));
         c.setPropietario(dueño);
@@ -59,6 +62,9 @@ public class CaravanaService {
         dto.setDescripcion(entidad.getDescripcion());
         dto.setLatitud(entidad.getLatitud());
         dto.setLongitud(entidad.getLongitud());
+        dto.setMatricula(entidad.getMatricula());
+        dto.setPrecioPorDia(entidad.getPrecioPorDia());
+        dto.setPlazas(entidad.getPlazas());
         CaravanaResponseDTO.PropietarioResumenDTO propDto = new CaravanaResponseDTO.PropietarioResumenDTO();
         propDto.setIdUsuario(entidad.getPropietario().getIdUsuario());
         propDto.setNombre(entidad.getPropietario().getNombre());
