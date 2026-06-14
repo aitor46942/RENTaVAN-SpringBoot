@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface AlquilerRepository extends JpaRepository<Alquiler, Long> {
     List<Alquiler> findByClienteIdUsuario(Long idUsuario);
+    boolean existsByCaravanaIdCaravanaAndEstadoNot(Long idCaravana, String estado);
 }

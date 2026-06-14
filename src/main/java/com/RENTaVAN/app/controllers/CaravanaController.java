@@ -5,6 +5,7 @@ import com.RENTaVAN.app.dto.CaravanaResponseDTO;
 import com.RENTaVAN.app.dto.UbicacionDTO;
 import com.RENTaVAN.app.services.CaravanaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -47,10 +48,12 @@ public class CaravanaController {
     }
 
     @DeleteMapping("/{idCaravana}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long idCaravana) {
+    public ResponseEntity<?> eliminar(@PathVariable Long idCaravana) {
         try {
             caravanaService.eliminarCaravana(idCaravana);
             return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

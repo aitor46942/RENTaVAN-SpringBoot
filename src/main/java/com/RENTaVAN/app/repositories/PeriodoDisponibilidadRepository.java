@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface PeriodoDisponibilidadRepository extends JpaRepository<PeriodoDisponibilidad, Long> {
     List<PeriodoDisponibilidad> findByCaravanaIdCaravana(Long idCaravana);
+    void deleteByCaravanaIdCaravana(Long idCaravana);
 }

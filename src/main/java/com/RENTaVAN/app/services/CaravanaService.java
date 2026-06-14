@@ -5,10 +5,13 @@ import com.RENTaVAN.app.dto.CaravanaResponseDTO;
 import com.RENTaVAN.app.dto.UbicacionDTO;
 import com.RENTaVAN.app.entities.Caravana;
 import com.RENTaVAN.app.entities.Usuario;
+import com.RENTaVAN.app.repositories.AlquilerRepository;
 import com.RENTaVAN.app.repositories.CaravanaRepository;
+import com.RENTaVAN.app.repositories.PeriodoDisponibilidadRepository;
 import com.RENTaVAN.app.repositories.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
@@ -17,6 +20,8 @@ public class CaravanaService {
 
     private final CaravanaRepository caravanaRepository;
     private final UsuarioRepository  usuarioRepository;
+    private final AlquilerRepository alquilerRepository;
+    private final PeriodoDisponibilidadRepository periodoRepository;
 
     public List<Caravana> obtenerTodas() {
         return caravanaRepository.findAll();
@@ -51,9 +56,13 @@ public class CaravanaService {
         return caravanaRepository.save(c);
     }
 
+    @Transactional
     public void eliminarCaravana(Long idCaravana) {
         if (!caravanaRepository.existsById(idCaravana))
             throw new RuntimeException("Caravana no encontrada");
+        if (alquilerRepository.existsByCaravanaIdCaravanaAndEstadoNot(idCaravana, "CANCELADO"))
+            throw new IllegalStateException("La caravana tiene alquileres activos y no puede eliminarse");
+        periodoRepository.deleteByCaravanaIdCaravana(idCaravana);
         caravanaRepository.deleteById(idCaravana);
     }
 
